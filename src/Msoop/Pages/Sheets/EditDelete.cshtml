@@ -1,0 +1,70 @@
+@page "/Sheets/{id:Guid}/EditDelete"
+@using Msoop.ViewModels
+@using Msoop.Extensions
+@model Msoop.Pages.Sheets.EditDelete
+
+@section Scripts
+{
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <partial name="_ValidationScriptsPartial"/>
+}
+
+<a asp-page="Index" asp-route-id="@Model.Data.Id">View Sheet</a>
+<form id="edit-sheet-form" method="post">
+    <div class="form-control">
+        <label asp-for="Data.PostAgeLimit">Take posts from:</label>
+        <select asp-for="Data.PostAgeLimit" asp-items="@Html.GetEnumSelectList<PostAgeLimit>()"></select>
+        <span asp-validation-for="Data.PostAgeLimit" class="text-danger"></span>
+    </div>
+
+    <div id="custom-age-input" class="form-control"
+         hidden="@(Model.Data.PostAgeLimit != PostAgeLimit.Custom)">
+        <label asp-for="Data.CustomAgeLimit">Last</label>
+        <input asp-for="Data.CustomAgeLimit"/>
+        <span>days</span>
+        <span asp-validation-for="Data.CustomAgeLimit" class="text-danger"></span>
+    </div>
+
+    <button type="submit" asp-page-handler="Edit" class="btn btn-primary">Save</button>
+    <button type="submit" asp-page-handler="Delete" class="btn btn-danger">Delete</button>
+</form>
+
+
+<div>
+    <h2>Subreddits</h2>
+    <a class="btn btn-primary" asp-page="Subreddits/Create" asp-route-sheetId="@Model.Data.Id">
+        Add Subreddit
+    </a>
+    @if (Model.Data.Subreddits?.Count > 0)
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Number of Posts</th>
+                <th scope="col">OrderBy</th>
+            </tr>
+            </thead>
+            <tbody>
+            @for (var i = 0; i < Model.Data.Subreddits.Count; i++)
+            {
+                var sheetSection = Model.Data.Subreddits[i];
+                <tr>
+                    <th scope="row">@i</th>
+                    <td>@sheetSection.Name</td>
+                    <td>@sheetSection.PostLimit</td>
+                    <td>@sheetSection.PostOrdering.GetEnumDisplayName()</td>
+                    <td>
+                        <a asp-page="Subreddits/EditDelete"
+                           asp-route-sheetId="@Model.Data.Id"
+                           asp-route-subName="@sheetSection.Name">
+                            Edit/Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>

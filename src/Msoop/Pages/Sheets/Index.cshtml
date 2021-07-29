@@ -1,0 +1,52 @@
+@page "{id:Guid}"
+@model Msoop.Pages.Sheets.Index
+
+@{
+    ViewData["id"] = RouteData.Values["id"];
+}
+
+<div class="row">
+    <div class="col-2 position-fixed ml-2">
+        <ul class="list-unstyled">
+            <li>
+                <a asp-page="Subreddits/Create" asp-route-sheetId="@ViewData["id"]">Add Subreddit</a>
+            </li>
+            <li>
+                <a asp-page="EditDelete" asp-route-id="@ViewData["id"]">Configure Sheet</a>
+            </li>
+            @foreach (var subreddit in Model.Data)
+            {
+                <li>
+                    <a class="text-uppercase" href="#@subreddit.Name">@subreddit.Name</a>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="offset-3 col">
+        @foreach (var subreddit in Model.Data)
+        {
+            <section id="@subreddit.Name" class="pb-5">
+                <div class="d-flex align-items-center">
+                    <h2 class="pr-4">@subreddit.Name</h2>
+                    <span class="pr-4">@subreddit.PostOrdering</span>
+                    <a asp-page="Subreddits/EditDelete" asp-route-sheetId="@ViewData["id"]" asp-route-subName="@subreddit.Name">Edit</a>
+                </div>
+                <ul class="list-unstyled">
+                    @foreach (var post in subreddit.Posts)
+                    {
+                        <li class="mb-4">
+                            <div class="d-flex mb-1">
+                                <div class="mr-3 font-weight-bold">@post.Score</div>
+                                <a class="mr-3 mb-0" href="@post.DiscussionUrl" target="_blank" rel="noopener">@post.Title</a>
+                            </div>
+                            <div class="d-flex">
+                                <a class="mr-3" href="@post.DiscussionUrl" target="_blank" rel="noopener">@post.CommentsCount Comments</a>
+                                <div c="mr-3">@post.CreatedUtc.ToString("dd-MM-yyyy")</div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </section>
+        }
+    </div>
+</div>
