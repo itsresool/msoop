@@ -30,7 +30,7 @@ namespace Msoop.Pages.Sheets.Subreddits
             {
                 SheetId = sheetId,
                 Name = Data.Name,
-                PostLimit = Data.PostLimit,
+                MaxPostCount = Data.MaxPostCount,
                 PostOrdering = Data.PostOrdering
             };
             _db.Subreddits.Add(section);

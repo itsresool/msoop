@@ -32,7 +32,7 @@ namespace Msoop.Pages.Sheets
             Data = new()
             {
                 Id = sheet.Id,
-                PostAgeLimit = sheet.LinksAgeLimitInDays switch
+                PostAgeLimit = sheet.PostAgeLimitInDays switch
                 {
                     1 => PostAgeLimit.LastDay,
                     7 => PostAgeLimit.LastWeek,
@@ -40,11 +40,11 @@ namespace Msoop.Pages.Sheets
                     365 => PostAgeLimit.LastYear,
                     _ => PostAgeLimit.Custom
                 },
-                CustomAgeLimit = sheet.LinksAgeLimitInDays,
+                CustomAgeLimit = sheet.PostAgeLimitInDays,
                 Subreddits = sheet.Subreddits.Select(sub => new CreateSubredditViewModel()
                     {
                         Name = sub.Name,
-                        PostLimit = sub.PostLimit,
+                        MaxPostCount = sub.MaxPostCount,
                         PostOrdering = sub.PostOrdering,
                     })
                     .ToList()
@@ -67,7 +67,7 @@ namespace Msoop.Pages.Sheets
                 return RedirectToPage("Index", new {id});
             }
 
-            sheet.LinksAgeLimitInDays = Data.PostAgeLimit switch
+            sheet.PostAgeLimitInDays = Data.PostAgeLimit switch
             {
                 PostAgeLimit.LastDay => 1,
                 PostAgeLimit.LastWeek => 7,

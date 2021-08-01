@@ -32,7 +32,7 @@ namespace Msoop.Pages.Sheets.Subreddits
             Data = new()
             {
                 Name = subreddit.Name,
-                PostLimit = subreddit.PostLimit,
+                MaxPostCount = subreddit.MaxPostCount,
                 PostOrdering = subreddit.PostOrdering
             };
             return Page();
@@ -46,7 +46,7 @@ namespace Msoop.Pages.Sheets.Subreddits
             }
 
             var subreddit = await _db.Subreddits.FindAsync(sheetId, subName);
-            subreddit.PostLimit = Data.PostLimit;
+            subreddit.MaxPostCount = Data.MaxPostCount;
             subreddit.PostOrdering = Data.PostOrdering;
             await _db.SaveChangesAsync();
 

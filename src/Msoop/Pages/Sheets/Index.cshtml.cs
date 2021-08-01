@@ -44,9 +44,9 @@ namespace Msoop.Pages.Sheets
             {
                 var fetchTasks = sheet.Subreddits.Select(async subreddit =>
                 {
-                    var listing = await _redditService.GetTopLinks(subreddit.Name, sheet.LinksAgeLimitInDays);
+                    var listing = await _redditService.GetTopLinks(subreddit.Name, sheet.PostAgeLimitInDays);
                     var posts = listing.Data.Children.Select(l => l.Data)
-                        .Where(p => (DateTimeOffset.UtcNow - p.CreatedUtc).Days <= sheet.LinksAgeLimitInDays);
+                        .Where(p => (DateTimeOffset.UtcNow - p.CreatedUtc).Days <= sheet.PostAgeLimitInDays);
 
                     var orderedPosts = subreddit.PostOrdering switch
                     {
@@ -61,7 +61,7 @@ namespace Msoop.Pages.Sheets
                     {
                         Name = subreddit.Name,
                         PostOrdering = subreddit.PostOrdering,
-                        Posts = orderedPosts.Take(subreddit.PostLimit)
+                        Posts = orderedPosts.Take(subreddit.MaxPostCount)
                     };
                 });
 
