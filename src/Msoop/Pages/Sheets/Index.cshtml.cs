@@ -25,7 +25,7 @@ namespace Msoop.Pages.Sheets
 
         public List<SubredditViewModel> Data { get; set; } = new();
 
-        public async Task<ActionResult> OnGet(Guid id)
+        public async Task<ActionResult> OnGetAsync(Guid id)
         {
             var sheet = await _db.Sheets.Include(s => s.Subreddits).FirstOrDefaultAsync(s => s.Id == id);
             if (sheet is null)
