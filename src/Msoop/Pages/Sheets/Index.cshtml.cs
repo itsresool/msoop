@@ -44,7 +44,13 @@ namespace Msoop.Pages.Sheets
             {
                 var fetchTasks = sheet.Subreddits.Select(async subreddit =>
                 {
-                    var listing = await _redditService.GetTopLinks(subreddit.Name, sheet.PostAgeLimitInDays);
+                    var listingCmd = new RedditService.ListingCommand
+                    {
+                        SubredditName = subreddit.Name,
+                        MaxPostCount = subreddit.MaxPostCount,
+                        PostAgeLimitInDays = sheet.PostAgeLimitInDays
+                    };
+                    var listing = await _redditService.GetTopListing(listingCmd);
                     var posts = listing.Data.Children.Select(l => l.Data)
                         .Where(p => (DateTimeOffset.UtcNow - p.CreatedUtc).Days <= sheet.PostAgeLimitInDays);
 
