@@ -52,7 +52,8 @@ namespace Msoop.Pages.Sheets
                     };
                     var listing = await _redditService.GetTopListing(listingCmd);
                     var posts = listing.Data.Children.Select(l => l.Data)
-                        .Where(p => (DateTimeOffset.UtcNow - p.CreatedUtc).Days <= sheet.PostAgeLimitInDays);
+                        .Where(p => (DateTimeOffset.UtcNow - p.CreatedUtc).Days <= sheet.PostAgeLimitInDays)
+                        .Take(subreddit.MaxPostCount);
 
                     var orderedPosts = subreddit.PostOrdering switch
                     {
@@ -67,7 +68,7 @@ namespace Msoop.Pages.Sheets
                     {
                         Name = subreddit.Name,
                         PostOrdering = subreddit.PostOrdering,
-                        Posts = orderedPosts.Take(subreddit.MaxPostCount)
+                        Posts = orderedPosts
                     };
                 });
 
