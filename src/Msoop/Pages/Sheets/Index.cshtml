@@ -38,6 +38,12 @@
                             <div class="d-flex mb-1">
                                 <div class="mr-3 font-weight-bold">@post.Score</div>
                                 <a class="mr-3 mb-0" href="@post.DiscussionUrl" target="_blank" rel="noopener">@post.Title</a>
+                                @if (!post.IsFromReddit)
+                                {
+                                    <span>
+                                        <a class="text-muted" href="@post.Url">(@post.Domain)</a>
+                                    </span>
+                                }
                             </div>
                             <div class="d-flex">
                                 <a class="mr-3" href="@post.DiscussionUrl" target="_blank" rel="noopener">@post.CommentsCount Comments</a>

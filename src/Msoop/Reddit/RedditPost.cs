@@ -22,5 +22,26 @@ namespace Msoop.Reddit
 
         [JsonPropertyName("num_comments")]
         public int CommentsCount { get; set; }
+
+        public string Domain { get; set; }
+
+        public bool IsFromReddit => IsSelf || IsRedditMediaDomain || Domain == "reddit.com";
+
+        [JsonInclude]
+        [JsonPropertyName("is_self")]
+        public bool IsSelf { private get; set; }
+
+        [JsonInclude]
+        [JsonPropertyName("is_reddit_media_domain")]
+        public bool IsRedditMediaDomain { private get; set; }
+
+        [JsonPropertyName("over_18")]
+        public bool IsOver18 { get; set; }
+
+        [JsonPropertyName("spoiler")]
+        public bool IsSpoiler { get; set; }
+
+        [JsonPropertyName("is_stickied")]
+        public bool IsStickied { get; set; }
     }
 }
