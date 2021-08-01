@@ -1,25 +1,32 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
 
 namespace Msoop.Reddit
 {
     public class RedditService
     {
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _apiClient;
 
-        public RedditService(HttpClient httpClient)
+        public RedditService(HttpClient apiClient,
+            IOptions<RedditOptions> options)
         {
-            httpClient.BaseAddress = new Uri("https://www.reddit.com");
-            httpClient.DefaultRequestHeaders.Add("User-Agent", "Msoop");
-            _httpClient = httpClient;
+            _apiClient = apiClient;
+            var opts = options.Value;
+
+            _apiClient.BaseAddress = new Uri(opts.ApiBaseAddress);
+            // Reddit requires from each app to have a unique user-agent that conforms to their syntax
+            // Yet using .Add on that user-agent will fail with FormatException
+            _apiClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", opts.WebUserAgent);
         }
 
-        // /r/${subredditName}/top/.json?sort=top&t=${timePeriod}&before=${before}&after=${after}&count=${count}&limit=${limit}&raw_json=1
-        public async Task<RedditResource<RedditListing>> GetTopLinks(string subredditName, int postAge)
+        public async Task<RedditResource<RedditListing>> GetTopLinks(string subredditName, int postAgeLimitInDays)
         {
-            var ageOption = postAge switch
+            var ageOption = postAgeLimitInDays switch
             {
                 <= 1 => "day",
                 <= 7 => "week",
@@ -27,8 +34,14 @@ namespace Msoop.Reddit
                 <= 365 => "year",
                 _ => "all",
             };
-            return await _httpClient.GetFromJsonAsync<RedditResource<RedditListing>>(
-                $"/r/{subredditName}/top/.json?sort=top&t={ageOption}&raw_json=1");
+
+            var queryString = new Dictionary<string, string>()
+            {
+                {"t", ageOption},
+                {"limit", "44"}
+            };
+            var requestUri = QueryHelpers.AddQueryString($"/r/{subredditName}/top", queryString);
+            return await _apiClient.GetFromJsonAsync<RedditResource<RedditListing>>(requestUri);
         }
     }
 }

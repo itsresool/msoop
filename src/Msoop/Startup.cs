@@ -31,8 +31,14 @@ namespace Msoop
                 options.UseSqlServer(Configuration.GetConnectionString("MsoopConnection"));
             });
 
+            services.Configure<RedditOptions>(Configuration.GetSection(RedditOptions.Reddit));
+            services.AddTransient<AuthorizationHandler>();
+            services.AddTransient<RateLimitHandler>();
+
             services.AddRazorPages();
-            services.AddHttpClient<RedditService>();
+            services.AddHttpClient<RedditService>()
+                .AddHttpMessageHandler<AuthorizationHandler>()
+                .AddHttpMessageHandler<RateLimitHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
