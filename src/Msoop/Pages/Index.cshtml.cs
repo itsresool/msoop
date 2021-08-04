@@ -22,7 +22,12 @@ namespace Msoop.Pages
 
         public async Task<RedirectToPageResult> OnPostAsync()
         {
-            var sheet = new Sheet();
+            var sheet = new Sheet()
+            {
+                AllowOver18 = true,
+                AllowSpoilers = true,
+                AllowStickied = false
+            };
 
             _db.Sheets.Add(sheet);
             await _db.SaveChangesAsync();

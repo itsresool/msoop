@@ -40,6 +40,9 @@ namespace Msoop.Pages.Sheets
                     365 => PostAgeLimit.LastYear,
                     _ => PostAgeLimit.Custom
                 },
+                AllowOver18 = sheet.AllowOver18,
+                AllowSpoilers = sheet.AllowSpoilers,
+                AllowStickied = sheet.AllowStickied,
                 CustomAgeLimit = sheet.PostAgeLimitInDays,
                 Subreddits = sheet.Subreddits.Select(sub => new CreateSubredditViewModel()
                     {
@@ -76,6 +79,9 @@ namespace Msoop.Pages.Sheets
                 PostAgeLimit.Custom => Data.CustomAgeLimit,
                 _ => throw new ArgumentOutOfRangeException()
             };
+            sheet.AllowOver18 = Data.AllowOver18;
+            sheet.AllowSpoilers = Data.AllowSpoilers;
+            sheet.AllowStickied = Data.AllowStickied;
 
             await _db.SaveChangesAsync();
 

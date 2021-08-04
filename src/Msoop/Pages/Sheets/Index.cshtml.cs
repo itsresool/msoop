@@ -53,6 +53,9 @@ namespace Msoop.Pages.Sheets
                     var listing = await _redditService.GetTopListing(listingCmd);
                     var posts = listing.Data.Children.Select(l => l.Data)
                         .Where(p => (DateTimeOffset.UtcNow - p.CreatedUtc).Days <= sheet.PostAgeLimitInDays)
+                        .Where(p => sheet.AllowOver18 || p.IsOver18 is false)
+                        .Where(p => sheet.AllowSpoilers || p.IsSpoiler is false)
+                        .Where(p => sheet.AllowStickied || p.IsStickied is false)
                         .Take(subreddit.MaxPostCount);
 
                     var orderedPosts = subreddit.PostOrdering switch

@@ -41,8 +41,20 @@
                                 @if (!post.IsFromReddit)
                                 {
                                     <span>
-                                        <a class="text-muted" href="@post.Url">(@post.Domain)</a>
+                                        <a class="text-muted ml-4" href="@post.Url">(@post.Domain)</a>
                                     </span>
+                                }
+                                @if (post.IsOver18)
+                                {
+                                    <span class="ml-4 text-uppercase">nsfw</span>
+                                }
+                                @if (post.IsSpoiler)
+                                {
+                                    <span class="ml-4 text-uppercase">spoiler</span>
+                                }
+                                @if (post.IsStickied)
+                                {
+                                    <span class="ml-4 text-uppercase">sticky</span>
                                 }
                             </div>
                             <div class="d-flex">
