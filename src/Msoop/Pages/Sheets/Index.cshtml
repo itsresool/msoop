@@ -1,4 +1,5 @@
 @page "{id:Guid}"
+@using Microsoft.AspNetCore.Html
 @model Msoop.Pages.Sheets.Index
 
 @{
@@ -37,7 +38,7 @@
                         <li class="mb-4">
                             <div class="d-flex mb-1">
                                 <div class="mr-3 font-weight-bold">@post.Score</div>
-                                <a class="mr-3 mb-0" href="@post.DiscussionUrl" target="_blank" rel="noopener">@post.Title</a>
+                                <a class="mr-3 mb-0" href="@post.DiscussionUrl" target="_blank" rel="noopener">@(new HtmlString(post.Title))</a>
                                 @if (!post.IsFromReddit)
                                 {
                                     <span>
