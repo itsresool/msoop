@@ -47,6 +47,9 @@ namespace Msoop
                 app.UseHsts();
             }
 
+            app.UseStatusCodePages();
+            app.UseStatusCodePagesWithReExecute("/Status{0}");
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
