@@ -1,0 +1,23 @@
+<script src="~/js/top-1000-subreddits.js"></script>
+<script src="~/lib/autoComplete.js/autoComplete.min.js"></script>
+<link rel="stylesheet" href="~/lib/autoComplete.js/autoComplete.min.css">
+<script>
+    const engine = new autoComplete({
+        placeholder: "Search for subreddit",
+        data: {
+            src: window.top1000Subreddits,
+        },
+        selector: "#Data_Name",
+        resultItem: {
+            highlight: {
+                render: true
+            }
+        }
+    });
+    
+    document.querySelector("#Data_Name").addEventListener("selection", function (event) {
+        const selectedOption = event.detail.selection.value;
+        const input = document.querySelector("#Data_Name");
+        input.value = selectedOption;
+    });
+</script>

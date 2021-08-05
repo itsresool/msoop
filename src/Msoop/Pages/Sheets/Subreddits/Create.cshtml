@@ -9,14 +9,16 @@
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial"/>
+    <partial name="_SubredditNameAutocomplete"/>
 }
 
 <a asp-page="../EditDelete" asp-route-id="@ViewData["sheetId"]">Back to Configure Sheet</a>
 <form method="post">
     <h2>Add subreddit to your sheet</h2>
+    <div asp-validation-summary="All" class="text-danger"></div>
     <div class="form-group">
         <label asp-for="Data.Name" class="control-label"></label>
-        <input asp-for="Data.Name" class="form-control"/>
+        <input asp-for="Data.Name" autocomplete="off"/>
         <span asp-validation-for="Data.Name" class="text-danger"></span>
     </div>
     <div class="form-group">

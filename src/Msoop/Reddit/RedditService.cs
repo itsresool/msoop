@@ -25,6 +25,20 @@ namespace Msoop.Reddit
             _apiClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", opts.WebUserAgent);
         }
 
+        public async Task<bool> SubredditExists(string name)
+        {
+            var resp = await _apiClient.GetAsync($"/r/{name}/about");
+            return resp.IsSuccessStatusCode;
+        }
+
+        public class ListingCommand
+        {
+            public string SubredditName { get; init; }
+            public int MaxPostCount { get; init; }
+            public int PostAgeLimitInDays { get; init; }
+            public bool HasCustomPostAgeLimit => PostAgeLimitInDays is not 1 or 7 or 31 or 365;
+        }
+
         public async Task<RedditResource<RedditListing>> GetTopListing(ListingCommand cmd)
         {
             var ageOption = cmd.PostAgeLimitInDays switch
@@ -49,14 +63,6 @@ namespace Msoop.Reddit
             };
             var requestUri = QueryHelpers.AddQueryString($"/r/{cmd.SubredditName}/top", queryString);
             return await _apiClient.GetFromJsonAsync<RedditResource<RedditListing>>(requestUri);
-        }
-
-        public class ListingCommand
-        {
-            public string SubredditName { get; init; }
-            public int MaxPostCount { get; init; }
-            public int PostAgeLimitInDays { get; init; }
-            public bool HasCustomPostAgeLimit => PostAgeLimitInDays is not 1 or 7 or 31 or 365;
         }
     }
 }
