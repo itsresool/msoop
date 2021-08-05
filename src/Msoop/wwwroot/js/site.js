@@ -6,5 +6,5 @@ $(document).ready(() => {
         const shouldHideCustomInput = $(event.target).val() !== $("#edit-sheet-form select > option").last().val();
         $("#custom-age-input").attr("hidden", shouldHideCustomInput);
     });
-   
+
 });
