@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using Msoop.Reddit.Exceptions;
 
 namespace Msoop.Reddit
 {
@@ -59,6 +60,10 @@ namespace Msoop.Reddit
                     _accessToken =
                         await resp.Content.ReadFromJsonAsync<RedditAccessToken>(cancellationToken: cancellationToken);
                 }
+            }
+            catch (Exception)
+            {
+                throw new RedditServiceException("Failed to authorize with reddit services.");
             }
             finally
             {

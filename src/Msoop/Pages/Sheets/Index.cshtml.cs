@@ -40,48 +40,41 @@ namespace Msoop.Pages.Sheets
 
         private async Task FetchSheetData(Sheet sheet)
         {
-            try
+            var fetchTasks = sheet.Subreddits.Select(async subreddit =>
             {
-                var fetchTasks = sheet.Subreddits.Select(async subreddit =>
+                var listingCmd = new RedditService.ListingCommand
                 {
-                    var listingCmd = new RedditService.ListingCommand
-                    {
-                        SubredditName = subreddit.Name,
-                        MaxPostCount = subreddit.MaxPostCount,
-                        PostAgeLimitInDays = sheet.PostAgeLimitInDays
-                    };
-                    var listing = await _redditService.GetTopListing(listingCmd);
-                    var posts = listing.Data.Children.Select(l => l.Data)
-                        .Where(p => (DateTimeOffset.UtcNow - p.CreatedUtc).Days <= sheet.PostAgeLimitInDays)
-                        .Where(p => sheet.AllowOver18 || p.IsOver18 is false)
-                        .Where(p => sheet.AllowSpoilers || p.IsSpoiler is false)
-                        .Where(p => sheet.AllowStickied || p.IsStickied is false)
-                        .Take(subreddit.MaxPostCount);
+                    SubredditName = subreddit.Name,
+                    MaxPostCount = subreddit.MaxPostCount,
+                    PostAgeLimitInDays = sheet.PostAgeLimitInDays
+                };
+                var listing = await _redditService.GetTopListing(listingCmd);
+                var posts = listing.Data.Children.Select(l => l.Data)
+                    .Where(p => (DateTimeOffset.UtcNow - p.CreatedUtc).Days <= sheet.PostAgeLimitInDays)
+                    .Where(p => sheet.AllowOver18 || p.IsOver18 is false)
+                    .Where(p => sheet.AllowSpoilers || p.IsSpoiler is false)
+                    .Where(p => sheet.AllowStickied || p.IsStickied is false)
+                    .Take(subreddit.MaxPostCount);
 
-                    var orderedPosts = subreddit.PostOrdering switch
-                    {
-                        PostOrdering.Newest => posts.OrderByDescending(p => p.CreatedUtc),
-                        PostOrdering.Oldest => posts.OrderBy(p => p.CreatedUtc),
-                        PostOrdering.ScoreDesc => posts,
-                        PostOrdering.CommentsDesc => posts.OrderByDescending(p => p.CommentsCount),
-                        _ => throw new ArgumentOutOfRangeException()
-                    };
+                var orderedPosts = subreddit.PostOrdering switch
+                {
+                    PostOrdering.Newest => posts.OrderByDescending(p => p.CreatedUtc),
+                    PostOrdering.Oldest => posts.OrderBy(p => p.CreatedUtc),
+                    PostOrdering.ScoreDesc => posts,
+                    PostOrdering.CommentsDesc => posts.OrderByDescending(p => p.CommentsCount),
+                    _ => throw new ArgumentOutOfRangeException(nameof(subreddit.PostOrdering))
+                };
 
-                    return new SubredditViewModel()
-                    {
-                        Name = subreddit.Name,
-                        PostOrdering = subreddit.PostOrdering,
-                        Posts = orderedPosts
-                    };
-                });
+                return new SubredditViewModel()
+                {
+                    Name = subreddit.Name,
+                    PostOrdering = subreddit.PostOrdering,
+                    Posts = orderedPosts
+                };
+            });
 
-                var fetchedSubreddits = await Task.WhenAll(fetchTasks);
-                Data.AddRange(fetchedSubreddits);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+            var fetchedSubreddits = await Task.WhenAll(fetchTasks);
+            Data.AddRange(fetchedSubreddits);
         }
     }
 }

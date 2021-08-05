@@ -60,14 +60,13 @@ namespace Msoop.Pages.Sheets
         {
             if (!ModelState.IsValid)
             {
-                Console.WriteLine("invalid");
                 return Page();
             }
 
             var sheet = await _db.Sheets.FindAsync(id);
             if (sheet is null)
             {
-                return RedirectToPage("Index", new {id});
+                throw new InvalidOperationException("There is no sheet to configure.");
             }
 
             sheet.PostAgeLimitInDays = Data.PostAgeLimit switch
@@ -77,7 +76,7 @@ namespace Msoop.Pages.Sheets
                 PostAgeLimit.LastMonth => 31,
                 PostAgeLimit.LastYear => 365,
                 PostAgeLimit.Custom => Data.CustomAgeLimit,
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new ArgumentOutOfRangeException(nameof(Data.PostAgeLimit))
             };
             sheet.AllowOver18 = Data.AllowOver18;
             sheet.AllowSpoilers = Data.AllowSpoilers;
@@ -93,7 +92,7 @@ namespace Msoop.Pages.Sheets
             var sheet = await _db.Sheets.FindAsync(id);
             if (sheet is null)
             {
-                // TODO show error page   
+                throw new InvalidOperationException("There is no sheet to delete.");
             }
 
             _db.Sheets.Remove(sheet);

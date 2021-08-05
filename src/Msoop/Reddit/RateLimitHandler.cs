@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Msoop.Reddit.Exceptions;
 
 namespace Msoop.Reddit
 {
@@ -11,14 +12,14 @@ namespace Msoop.Reddit
         private const string RemainingHeaderName = "X-Ratelimit-Remaining";
         private const string NextPeriodHeaderName = "X-Ratelimit-Reset";
         private int _requestsRemaining = 60;
-        private int _secondsToNextPeriod = 60;
+        private DateTimeOffset _nextPeriodUtcAt = DateTimeOffset.UtcNow.AddMinutes(1);
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
             if (_requestsRemaining == 0)
             {
-                throw new Exception($"Try again in {_secondsToNextPeriod} seconds");
+                throw new RateLimitedException(_nextPeriodUtcAt);
             }
 
             var response = await base.SendAsync(request, cancellationToken);
@@ -38,7 +39,8 @@ namespace Msoop.Reddit
             if (response.Headers.Contains(NextPeriodHeaderName))
             {
                 var value = response.Headers.GetValues(NextPeriodHeaderName).First();
-                _secondsToNextPeriod = int.Parse(value);
+                var secondsToNextPeriod = int.Parse(value);
+                _nextPeriodUtcAt = DateTimeOffset.UtcNow.AddSeconds(secondsToNextPeriod);
             }
         }
     }

@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
+using Msoop.Reddit.Exceptions;
 
 namespace Msoop.Reddit
 {
@@ -27,8 +28,15 @@ namespace Msoop.Reddit
 
         public async Task<bool> SubredditExists(string name)
         {
-            var resp = await _apiClient.GetAsync($"/r/{name}/about");
-            return resp.IsSuccessStatusCode;
+            try
+            {
+                var resp = await _apiClient.GetAsync($"/r/{name}/about");
+                return resp.IsSuccessStatusCode;
+            }
+            catch (Exception)
+            {
+                throw new RedditServiceException($"Failed to check if /r/{name} exists.");
+            }
         }
 
         public class ListingCommand
@@ -47,7 +55,7 @@ namespace Msoop.Reddit
                 <= 7 => "week",
                 <= 31 => "month",
                 <= 365 => "year",
-                _ => "all",
+                _ => "all"
             };
             // We fetch maximum amount of posts that's allowed, when we use a custom age limit,
             // because for these we have to fetch a larger slice of data that contains both posts
@@ -62,7 +70,14 @@ namespace Msoop.Reddit
                 {"limit", listingLimit.ToString()}
             };
             var requestUri = QueryHelpers.AddQueryString($"/r/{cmd.SubredditName}/top", queryString);
-            return await _apiClient.GetFromJsonAsync<RedditResource<RedditListing>>(requestUri);
+            try
+            {
+                return await _apiClient.GetFromJsonAsync<RedditResource<RedditListing>>(requestUri);
+            }
+            catch (Exception)
+            {
+                throw new RedditServiceException($"Failed to fetch /r/{cmd.SubredditName} listing.");
+            }
         }
     }
 }

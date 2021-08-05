@@ -46,6 +46,12 @@ namespace Msoop.Pages.Sheets.Subreddits
             }
 
             var subreddit = await _db.Subreddits.FindAsync(sheetId, subName);
+            if (subreddit is null)
+            {
+                throw new InvalidOperationException(
+                    "Impossible to save. This sheet has no such subreddit.");
+            }
+
             subreddit.MaxPostCount = Data.MaxPostCount;
             subreddit.PostOrdering = Data.PostOrdering;
             await _db.SaveChangesAsync();
@@ -58,7 +64,7 @@ namespace Msoop.Pages.Sheets.Subreddits
             var subreddit = await _db.Subreddits.FindAsync(sheetId, subName);
             if (subreddit is null)
             {
-                // TODO show error page   
+                throw new InvalidOperationException("Impossible to remove it. This sheet has no such subreddit.");
             }
 
             _db.Remove(subreddit);
