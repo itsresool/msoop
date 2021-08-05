@@ -11,6 +11,11 @@
     <partial name="_ValidationScriptsPartial"/>
 }
 
+@section Modals
+{
+    <partial name="_RemovalModal"/>
+}
+
 <a asp-page="../EditDelete" asp-route-id="@ViewData["sheetId"]">Back to Sheet Edit</a>
 <a asp-page="../Index" asp-route-id="@ViewData["sheetId"]">Back to Sheet</a>
 <form method="post">
@@ -27,5 +32,6 @@
     <span asp-validation-for="Data.PostOrdering" class="text-danger"></span>
 
     <button type="submit" asp-page-handler="Edit" class="btn btn-primary">Save</button>
-    <button type="submit" asp-page-handler="Delete" class="btn btn-danger">Delete</button>
+    <button type="button" data-micromodal-trigger="removal-modal" class="btn btn-danger">Delete</button>
+    <button id="removal-modal-action" type="submit" asp-page-handler="Delete" hidden></button>
 </form>

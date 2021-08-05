@@ -9,6 +9,11 @@
     <partial name="_ValidationScriptsPartial"/>
 }
 
+@section Modals
+{
+    <partial name="_RemovalModal"/>
+}
+
 <a asp-page="Index" asp-route-id="@Model.Data.Id">View Sheet</a>
 <form id="edit-sheet-form" method="post">
     <div class="form-control">
@@ -38,7 +43,8 @@
         <label asp-for="Data.AllowStickied"></label>
     </div>
     <button type="submit" asp-page-handler="Edit" class="btn btn-primary">Save</button>
-    <button type="submit" asp-page-handler="Delete" class="btn btn-danger">Delete</button>
+    <button type="button" data-micromodal-trigger="removal-modal" class="btn btn-danger">Delete</button>
+    <button id="removal-modal-action" type="submit" asp-page-handler="Delete" hidden></button>
 </form>
 
 
