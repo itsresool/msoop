@@ -1,12 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Msoop.ViewModels
 {
-    public class SheetFormViewModel
+    public class EditSheetViewModel
     {
-        public Guid Id { get; set; }
         public PostAgeLimit PostAgeLimit { get; set; }
 
         [Range(1, 9999, ErrorMessage = "Value must be between {1} and {2}")]
@@ -20,8 +17,6 @@ namespace Msoop.ViewModels
 
         [Display(Name = "Allow stickied posts")]
         public bool AllowStickied { get; set; }
-
-        public IList<CreateSubredditViewModel> Subreddits { get; set; }
     }
 
     public enum PostAgeLimit

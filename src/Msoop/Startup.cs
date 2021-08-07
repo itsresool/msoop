@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,8 @@ namespace Msoop
             {
                 options.UseSqlServer(Configuration.GetConnectionString("MsoopConnection"));
             });
+
+            services.AddMediatR(typeof(Startup));
 
             services.Configure<RedditOptions>(Configuration.GetSection(RedditOptions.Reddit));
             services.AddRedditService();

@@ -1,9 +1,12 @@
 using System;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Msoop.Data;
+using Msoop.Features;
+using Msoop.Features.Subreddits;
 using Msoop.Reddit;
 using Msoop.ViewModels;
 
@@ -11,13 +14,11 @@ namespace Msoop.Pages.Sheets.Subreddits
 {
     public class Create : PageModel
     {
-        private readonly MsoopContext _db;
-        private readonly RedditService _redditService;
+        private readonly IMediator _mediator;
 
-        public Create(MsoopContext db, RedditService redditService)
+        public Create(IMediator mediator)
         {
-            _db = db;
-            _redditService = redditService;
+            _mediator = mediator;
         }
 
         [BindProperty]
@@ -30,29 +31,20 @@ namespace Msoop.Pages.Sheets.Subreddits
                 return Page();
             }
 
-            if (!await _redditService.SubredditExists(Data.Name))
+            var cmd = new CreateSubreddit.Command(sheetId, Data);
+            var result = await _mediator.Send(cmd);
+
+            switch (result)
             {
-                ModelState.AddModelError(nameof(Data), "Subreddit does not exist");
-                return Page();
+                case CreateSubreddit.Response.SubredditNotFound:
+                    ModelState.AddModelError(nameof(Data), "Subreddit does not exist");
+                    return Page();
+                case CreateSubreddit.Response.SubredditAlreadyAdded:
+                    ModelState.AddModelError(nameof(Data), "Subreddit already belongs to this sheet");
+                    return Page();
+                default:
+                    return RedirectToPage("../EditDelete", new {id = sheetId});
             }
-
-            if (await _db.Subreddits.AnyAsync(sub => sub.Name == Data.Name && sub.SheetId == sheetId))
-            {
-                ModelState.AddModelError(nameof(Data), "Subreddit already belongs to this sheet");
-                return Page();
-            }
-
-            var section = new Models.Subreddit
-            {
-                SheetId = sheetId,
-                Name = Data.Name,
-                MaxPostCount = Data.MaxPostCount,
-                PostOrdering = Data.PostOrdering
-            };
-            _db.Subreddits.Add(section);
-            await _db.SaveChangesAsync();
-
-            return RedirectToPage("../EditDelete", new {id = sheetId});
         }
     }
 }

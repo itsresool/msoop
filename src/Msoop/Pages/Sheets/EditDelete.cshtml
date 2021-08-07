@@ -1,7 +1,12 @@
 @page "/Sheets/{id:Guid}/EditDelete"
-@using Msoop.ViewModels
 @using Msoop.Extensions
+@using Msoop.Features.Sheets
+@using Msoop.ViewModels
 @model Msoop.Pages.Sheets.EditDelete
+
+@{
+    ViewData["id"] = RouteData.Values["id"];
+}
 
 @section Scripts
 {
@@ -14,33 +19,33 @@
     <partial name="_RemovalModal"/>
 }
 
-<a asp-page="Index" asp-route-id="@Model.Data.Id">View Sheet</a>
+<a asp-page="Index" asp-route-id="@ViewData["id"]">View Sheet</a>
 <form id="edit-sheet-form" method="post">
     <div class="form-control">
-        <label asp-for="Data.PostAgeLimit">Take posts from:</label>
-        <select asp-for="Data.PostAgeLimit" asp-items="@Html.GetEnumSelectList<PostAgeLimit>()"></select>
-        <span asp-validation-for="Data.PostAgeLimit" class="text-danger"></span>
+        <label asp-for="Form.PostAgeLimit">Take posts from:</label>
+        <select asp-for="Form.PostAgeLimit" asp-items="@Html.GetEnumSelectList<PostAgeLimit>()"></select>
+        <span asp-validation-for="Form.PostAgeLimit" class="text-danger"></span>
     </div>
 
     <div id="custom-age-input" class="form-control"
-         hidden="@(Model.Data.PostAgeLimit != PostAgeLimit.Custom)">
-        <label asp-for="Data.CustomAgeLimit">Last</label>
-        <input asp-for="Data.CustomAgeLimit"/>
+         hidden="@(Model.Form.PostAgeLimit != PostAgeLimit.Custom)">
+        <label asp-for="Form.CustomAgeLimit">Last</label>
+        <input asp-for="Form.CustomAgeLimit"/>
         <span>days</span>
-        <span asp-validation-for="Data.CustomAgeLimit" class="text-danger"></span>
+        <span asp-validation-for="Form.CustomAgeLimit" class="text-danger"></span>
     </div>
 
     <div class="form-control">
-        <input asp-for="Data.AllowOver18">
-        <label asp-for="Data.AllowOver18"></label>
+        <input asp-for="Form.AllowOver18">
+        <label asp-for="Form.AllowOver18"></label>
     </div>
     <div class="form-control">
-        <input asp-for="Data.AllowSpoilers">
-        <label asp-for="Data.AllowSpoilers"></label>
+        <input asp-for="Form.AllowSpoilers">
+        <label asp-for="Form.AllowSpoilers"></label>
     </div>
     <div class="form-control">
-        <input asp-for="Data.AllowStickied">
-        <label asp-for="Data.AllowStickied"></label>
+        <input asp-for="Form.AllowStickied">
+        <label asp-for="Form.AllowStickied"></label>
     </div>
     <button type="submit" asp-page-handler="Edit" class="btn btn-primary">Save</button>
     <button type="button" data-micromodal-trigger="removal-modal" class="btn btn-danger">Delete</button>
@@ -50,10 +55,10 @@
 
 <div>
     <h2>Subreddits</h2>
-    <a class="btn btn-primary" asp-page="Subreddits/Create" asp-route-sheetId="@Model.Data.Id">
+    <a class="btn btn-primary" asp-page="Subreddits/Create" asp-route-sheetId="@ViewData["id"]">
         Add Subreddit
     </a>
-    @if (Model.Data.Subreddits?.Count > 0)
+    @if (Model.OwnedSubreddits?.Count > 0)
     {
         <table class="table">
             <thead>
@@ -65,9 +70,9 @@
             </tr>
             </thead>
             <tbody>
-            @for (var i = 0; i < Model.Data.Subreddits.Count; i++)
+            @for (var i = 0; i < Model.OwnedSubreddits.Count; i++)
             {
-                var sheetSection = Model.Data.Subreddits[i];
+                var sheetSection = Model.OwnedSubreddits[i];
                 <tr>
                     <th scope="row">@i</th>
                     <td>@sheetSection.Name</td>
@@ -75,7 +80,7 @@
                     <td>@sheetSection.PostOrdering.GetEnumDisplayName()</td>
                     <td>
                         <a asp-page="Subreddits/EditDelete"
-                           asp-route-sheetId="@Model.Data.Id"
+                           asp-route-sheetId="@ViewData["id"]"
                            asp-route-subName="@sheetSection.Name">
                             Edit/Delete
                         </a>
