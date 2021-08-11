@@ -15,7 +15,7 @@
             <li>
                 <a asp-page="EditDelete" asp-route-id="@ViewData["id"]">Configure Sheet</a>
             </li>
-            @foreach (var subreddit in Model.Data)
+            @foreach (var subreddit in Model.Data.Subreddits)
             {
                 <li>
                     <a class="text-uppercase" href="#@subreddit.Name">@subreddit.Name</a>
@@ -24,7 +24,7 @@
         </ul>
     </div>
     <div class="offset-3 col">
-        @foreach (var subreddit in Model.Data)
+        @foreach (var subreddit in Model.Data.Subreddits)
         {
             <section id="@subreddit.Name" class="pb-5">
                 <div class="d-flex align-items-center">

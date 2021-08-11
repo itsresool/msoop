@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Msoop.Data;
+using Msoop.Features.Sheets;
 using Msoop.Models;
 using Msoop.Reddit;
 
@@ -13,26 +15,18 @@ namespace Msoop.Pages
 {
     public class IndexModel : PageModel
     {
-        private readonly MsoopContext _db;
+        private readonly IMediator _mediator;
 
-        public IndexModel(MsoopContext db)
+        public IndexModel(IMediator mediator)
         {
-            _db = db;
+            _mediator = mediator;
         }
 
         public async Task<RedirectToPageResult> OnPostAsync()
         {
-            var sheet = new Sheet()
-            {
-                AllowOver18 = true,
-                AllowSpoilers = true,
-                AllowStickied = false
-            };
-
-            _db.Sheets.Add(sheet);
-            await _db.SaveChangesAsync();
-
-            return RedirectToPage("Sheets/EditDelete", new {id = sheet.Id});
+            var newSheetId = await _mediator.Send(new CreateSheet.Command());
+            
+            return RedirectToPage("Sheets/EditDelete", new {id = newSheetId});
         }
     }
 }

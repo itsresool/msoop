@@ -1,76 +1,58 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Msoop.Data;
+using Msoop.Features.Sheets;
+using Msoop.Features.Subreddits;
 using Msoop.ViewModels;
 
 namespace Msoop.Pages.Sheets.Subreddits
 {
     public class EditDelete : PageModel
     {
-        private readonly MsoopContext _db;
+        private readonly IMediator _mediator;
 
-        public EditDelete(MsoopContext db)
+        public EditDelete(IMediator mediator)
         {
-            _db = db;
+            _mediator = mediator;
         }
 
         [BindProperty]
-        public EditDeleteSubredditViewModel Data { get; set; }
+        public EditSubredditViewModel Data { get; set; }
 
-        public async Task<ActionResult> OnGetAsync(Guid sheetId, string subName)
+        public async Task<ActionResult> OnGetAsync(EditSubreddit.Query query)
         {
-            var subreddit = await _db.Subreddits.FindAsync(sheetId, subName);
-            if (subreddit is null)
+            Data = await _mediator.Send(query);
+            if (Data is null)
             {
                 return RedirectToPage("/Index");
             }
 
-            Data = new()
-            {
-                Name = subreddit.Name,
-                MaxPostCount = subreddit.MaxPostCount,
-                PostOrdering = subreddit.PostOrdering
-            };
             return Page();
         }
 
-        public async Task<ActionResult> OnPostEditAsync(Guid sheetId, string subName)
+        public async Task<ActionResult> OnPostEditAsync(EditSubreddit.Query query)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var subreddit = await _db.Subreddits.FindAsync(sheetId, subName);
-            if (subreddit is null)
-            {
-                throw new InvalidOperationException(
-                    "Impossible to save. This sheet has no such subreddit.");
-            }
+            var cmd = new EditSubreddit.Command(query, Data);
+            await _mediator.Send(cmd);
 
-            subreddit.MaxPostCount = Data.MaxPostCount;
-            subreddit.PostOrdering = Data.PostOrdering;
-            await _db.SaveChangesAsync();
-
-            return RedirectToPage("../EditDelete", new {Id = sheetId});
+            return RedirectToPage("../EditDelete", new {Id = cmd.SheetId});
         }
 
-        public async Task<ActionResult> OnPostDeleteAsync(Guid sheetId, string subName)
+        public async Task<ActionResult> OnPostDeleteAsync(DeleteSubreddit.Command cmd)
         {
-            var subreddit = await _db.Subreddits.FindAsync(sheetId, subName);
-            if (subreddit is null)
-            {
-                throw new InvalidOperationException("Impossible to remove it. This sheet has no such subreddit.");
-            }
+            await _mediator.Send(cmd);
 
-            _db.Remove(subreddit);
-            await _db.SaveChangesAsync();
-
-            return RedirectToPage("../EditDelete", new {Id = sheetId});
+            return RedirectToPage("../EditDelete", new {Id = cmd.SheetId});
         }
     }
 }

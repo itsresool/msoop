@@ -23,7 +23,7 @@ namespace Msoop.Pages.Sheets
 
         public IList<SubredditSummaryViewModel> OwnedSubreddits { get; set; }
 
-        public async Task<ActionResult> OnGetAsync(GetSheet.Query query)
+        public async Task<ActionResult> OnGetAsync(EditSheet.Query query)
         {
             var result = await _mediator.Send(query);
             if (result is null) return RedirectToPage("/Index");

@@ -4,6 +4,7 @@
 
 @{
     ViewData["sheetId"] = RouteData.Values["sheetId"];
+    ViewData["subName"] = RouteData.Values["subName"];
 }
 
 @section Scripts
@@ -19,7 +20,7 @@
 <a asp-page="../EditDelete" asp-route-id="@ViewData["sheetId"]">Back to Sheet Edit</a>
 <a asp-page="../Index" asp-route-id="@ViewData["sheetId"]">Back to Sheet</a>
 <form method="post">
-    <h1 class="h3">/r/@Model.Data.Name</h1>
+    <h1 class="h3">/r/@ViewData["subName"]</h1>
     <div class="form-group">
         <label asp-for="Data.MaxPostCount" class="control-label"></label>
         <input asp-for="Data.MaxPostCount" class="form-control"/>
