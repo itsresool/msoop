@@ -64,7 +64,6 @@
         <table class="table">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Number of Posts</th>
                 <th scope="col">OrderBy</th>
@@ -75,7 +74,6 @@
             {
                 var sheetSection = Model.OwnedSubreddits[i];
                 <tr>
-                    <th scope="row">@i</th>
                     <td>@sheetSection.Name</td>
                     <td>@sheetSection.MaxPostCount</td>
                     <td>@sheetSection.PostOrdering.GetEnumDisplayName()</td>
