@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using AutoMapper;
 using Msoop.Models;
 
 namespace Msoop.ViewModels
@@ -11,5 +12,13 @@ namespace Msoop.ViewModels
 
         [Display(Name = "Order posts by")]
         public PostOrdering PostOrdering { get; set; } = PostOrdering.Newest;
+
+        public class MappingProfile : Profile
+        {
+            public MappingProfile()
+            {
+                CreateMap<Subreddit, EditSubredditViewModel>();
+            }
+        }
     }
 }

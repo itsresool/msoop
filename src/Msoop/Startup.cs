@@ -28,6 +28,7 @@ namespace Msoop
                 options.UseSqlServer(Configuration.GetConnectionString("MsoopConnection"));
             });
 
+            services.AddAutoMapper(typeof(Startup));
             services.AddMediatR(typeof(Startup));
 
             services.Configure<RedditOptions>(Configuration.GetSection(RedditOptions.Reddit));

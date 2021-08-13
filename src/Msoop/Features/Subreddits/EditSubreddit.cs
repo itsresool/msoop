@@ -1,6 +1,8 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Msoop.Data;
 using Msoop.ViewModels;
@@ -19,25 +21,18 @@ namespace Msoop.Features.Subreddits
         public class QueryHandler : IRequestHandler<Query, EditSubredditViewModel>
         {
             private readonly MsoopContext _db;
+            private readonly IMapper _mapper;
 
-            public QueryHandler(MsoopContext db)
+            public QueryHandler(MsoopContext db, IMapper mapper)
             {
                 _db = db;
+                _mapper = mapper;
             }
 
             public async Task<EditSubredditViewModel> Handle(Query msg, CancellationToken cancellationToken)
             {
                 var subreddit = await _db.Subreddits.FindAsync(msg.SheetId, msg.SubName);
-                if (subreddit is null)
-                {
-                    return null;
-                }
-
-                return new()
-                {
-                    MaxPostCount = subreddit.MaxPostCount,
-                    PostOrdering = subreddit.PostOrdering
-                };
+                return subreddit is not null ? _mapper.Map<EditSubredditViewModel>(subreddit) : null;
             }
         }
 

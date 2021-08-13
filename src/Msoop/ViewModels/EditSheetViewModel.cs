@@ -1,9 +1,13 @@
+using System;
 using System.ComponentModel.DataAnnotations;
+using AutoMapper;
+using Msoop.Models;
 
 namespace Msoop.ViewModels
 {
     public class EditSheetViewModel
     {
+        public Guid Id { get; set; }
         public PostAgeLimit PostAgeLimit { get; set; }
 
         [Range(1, 9999, ErrorMessage = "Value must be between {1} and {2}")]
@@ -17,6 +21,26 @@ namespace Msoop.ViewModels
 
         [Display(Name = "Allow stickied posts")]
         public bool AllowStickied { get; set; }
+
+        public class MappingProfile : Profile
+        {
+            public MappingProfile()
+            {
+                CreateMap<Sheet, EditSheetViewModel>()
+                    .ForMember(dest => dest.PostAgeLimit,
+                        opt => opt.MapFrom(src => MapToPostAgeLimit(src.PostAgeLimitInDays)))
+                    .ForMember(dest => dest.CustomAgeLimit, opt => opt.MapFrom(src => src.PostAgeLimitInDays));
+            }
+
+            private static PostAgeLimit MapToPostAgeLimit(int postAgeInDays) => postAgeInDays switch
+            {
+                1 => PostAgeLimit.LastDay,
+                7 => PostAgeLimit.LastWeek,
+                31 => PostAgeLimit.LastMonth,
+                365 => PostAgeLimit.LastYear,
+                _ => PostAgeLimit.Custom
+            };
+        }
     }
 
     public enum PostAgeLimit

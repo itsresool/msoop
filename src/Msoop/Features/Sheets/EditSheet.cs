@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Msoop.Data;
@@ -32,10 +34,12 @@ namespace Msoop.Features.Sheets
         public class QueryHandler : IRequestHandler<Query, Response>
         {
             private readonly MsoopContext _db;
+            private readonly IMapper _mapper;
 
-            public QueryHandler(MsoopContext db)
+            public QueryHandler(MsoopContext db, IMapper mapper)
             {
                 _db = db;
+                _mapper = mapper;
             }
 
             public async Task<Response> Handle(Query msg, CancellationToken cancellationToken)
@@ -45,33 +49,13 @@ namespace Msoop.Features.Sheets
 
                 if (sheet is null) return null;
 
-                var editSheet = new EditSheetViewModel()
-                {
-                    PostAgeLimit = sheet.PostAgeLimitInDays switch
-                    {
-                        1 => PostAgeLimit.LastDay,
-                        7 => PostAgeLimit.LastWeek,
-                        31 => PostAgeLimit.LastMonth,
-                        365 => PostAgeLimit.LastYear,
-                        _ => PostAgeLimit.Custom
-                    },
-                    AllowOver18 = sheet.AllowOver18,
-                    AllowSpoilers = sheet.AllowSpoilers,
-                    AllowStickied = sheet.AllowStickied,
-                    CustomAgeLimit = sheet.PostAgeLimitInDays,
-                };
-                var subreddits = sheet.Subreddits.Select(sub => new SubredditSummaryViewModel()
-                    {
-                        Name = sub.Name,
-                        MaxPostCount = sub.MaxPostCount,
-                        PostOrdering = sub.PostOrdering,
-                    })
-                    .ToList();
+                var editSheet = _mapper.Map<EditSheetViewModel>(sheet);
+                var subreddits = _mapper.Map<IList<SubredditSummaryViewModel>>(sheet.Subreddits);
 
                 return new(editSheet, subreddits);
             }
         }
-        
+
         public class Command : IRequest
         {
             public Guid Id { get; }
