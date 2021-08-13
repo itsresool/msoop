@@ -3,8 +3,10 @@
 @model Msoop.Pages.Sheets.Subreddits.EditDelete
 
 @{
+    var subredditName = RouteData.Values["subName"];
+    ViewData["Title"] = $"Edit {subredditName} subreddit";
     ViewData["sheetId"] = RouteData.Values["sheetId"];
-    ViewData["subName"] = RouteData.Values["subName"];
+    ViewData["subName"] = subredditName;
 }
 
 @section Scripts
