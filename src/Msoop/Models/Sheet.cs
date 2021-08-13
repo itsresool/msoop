@@ -10,7 +10,7 @@ namespace Msoop.Models
         public bool AllowOver18 { get; set; }
         public bool AllowSpoilers { get; set; }
         public bool AllowStickied { get; set; }
-        
-        public List<Subreddit> Subreddits { get; set; }
+
+        public ICollection<Subreddit> Subreddits { get; set; }
     }
 }
