@@ -1,6 +1,9 @@
+using System;
+using System.Security.Policy;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +26,12 @@ namespace Msoop
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCookiePolicy(opt =>
+            {
+                // Consent is needed for Google Analytics
+                opt.CheckConsentNeeded = _ => true;
+                opt.MinimumSameSitePolicy = SameSiteMode.Strict;
+            });
             services.AddDbContext<MsoopContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("MsoopConnection"));
@@ -56,6 +65,7 @@ namespace Msoop
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCookiePolicy();
 
             app.UseRouting();
 
