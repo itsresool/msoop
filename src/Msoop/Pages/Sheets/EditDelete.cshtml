@@ -11,8 +11,9 @@
 
 @section Scripts
 {
-    <script src="~/js/site.js" asp-append-version="true"></script>
     <partial name="_ValidationScriptsPartial"/>
+    @* site.js has to be below validation scripts *@
+    <script src="~/js/site.js" asp-append-version="true"></script>
 }
 
 @section Modals
