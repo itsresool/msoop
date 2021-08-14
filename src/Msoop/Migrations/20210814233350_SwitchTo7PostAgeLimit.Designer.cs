@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Msoop.Data;
 
 namespace Msoop.Migrations
 {
     [DbContext(typeof(MsoopContext))]
-    partial class MsoopContextModelSnapshot : ModelSnapshot
+    [Migration("20210814233350_SwitchTo7PostAgeLimit")]
+    partial class SwitchTo7PostAgeLimit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

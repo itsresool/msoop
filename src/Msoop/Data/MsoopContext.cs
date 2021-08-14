@@ -14,7 +14,7 @@ namespace Msoop.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Sheet>().Property(s => s.PostAgeLimitInDays).HasDefaultValue(value: 14);
+            modelBuilder.Entity<Sheet>().Property(s => s.PostAgeLimitInDays).HasDefaultValue(value: 7);
 
             modelBuilder.Entity<Subreddit>().HasKey(sub => new { sub.SheetId, sub.Name });
         }
