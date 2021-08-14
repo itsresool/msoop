@@ -9,7 +9,7 @@ namespace Msoop.Reddit
         public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert,
             JsonSerializerOptions options)
         {
-            return DateTimeOffset.FromUnixTimeSeconds((long) reader.GetDouble());
+            return DateTimeOffset.FromUnixTimeSeconds((long)reader.GetDouble());
         }
 
         public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options)

@@ -11,8 +11,8 @@ namespace Msoop.Reddit
 {
     public class RedditService
     {
+        private const int MaxListingLimit = 100;
         private readonly HttpClient _apiClient;
-        public const int MaxListingLimit = 100;
 
         public RedditService(HttpClient apiClient,
             IOptions<RedditOptions> options)
@@ -39,14 +39,6 @@ namespace Msoop.Reddit
             }
         }
 
-        public class ListingCommand
-        {
-            public string SubredditName { get; init; }
-            public int MaxPostCount { get; init; }
-            public int PostAgeLimitInDays { get; init; }
-            public bool HasCustomPostAgeLimit => PostAgeLimitInDays is not 1 or 7 or 31 or 365;
-        }
-
         public async Task<RedditResource<RedditListing>> GetTopListing(ListingCommand cmd)
         {
             var ageOption = cmd.PostAgeLimitInDays switch
@@ -55,7 +47,7 @@ namespace Msoop.Reddit
                 <= 7 => "week",
                 <= 31 => "month",
                 <= 365 => "year",
-                _ => "all"
+                _ => "all",
             };
             // We fetch maximum amount of posts that's allowed, when we use a custom age limit,
             // because for these we have to fetch a larger slice of data that contains both posts
@@ -64,10 +56,10 @@ namespace Msoop.Reddit
             // if we were to limit ourselves to 20 items, half of them would be outside our time period.
             var listingLimit = cmd.HasCustomPostAgeLimit ? MaxListingLimit : cmd.MaxPostCount;
 
-            var queryString = new Dictionary<string, string>()
+            var queryString = new Dictionary<string, string>
             {
-                {"t", ageOption},
-                {"limit", listingLimit.ToString()}
+                { "t", ageOption },
+                { "limit", listingLimit.ToString() },
             };
             var requestUri = QueryHelpers.AddQueryString($"/r/{cmd.SubredditName}/top", queryString);
             try
@@ -78,6 +70,14 @@ namespace Msoop.Reddit
             {
                 throw new RedditServiceException($"Failed to fetch /r/{cmd.SubredditName} listing.");
             }
+        }
+
+        public class ListingCommand
+        {
+            public string SubredditName { get; init; }
+            public int MaxPostCount { get; init; }
+            public int PostAgeLimitInDays { get; init; }
+            public bool HasCustomPostAgeLimit => PostAgeLimitInDays is not 1 or 7 or 31 or 365;
         }
     }
 }

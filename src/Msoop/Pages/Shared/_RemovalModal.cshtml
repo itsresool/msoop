@@ -23,10 +23,11 @@
     <script src="~/lib/micromodal/micromodal.min.js"></script>
     <script>
         MicroModal.init();
-        document.querySelector("#removal-modal-confirm").addEventListener("click", () => {
-            const actionBtn = document.querySelector("#removal-modal-action");
-            actionBtn.click();
-        });
+        document.querySelector("#removal-modal-confirm").addEventListener("click",
+            () => {
+                const actionBtn = document.querySelector("#removal-modal-action");
+                actionBtn.click();
+            });
     </script>
 
 </div>

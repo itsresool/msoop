@@ -1,5 +1,3 @@
-@using Microsoft.AspNetCore.Http.Features
-
 @{
     var consentCookie = Context.Request.Cookies[".AspNet.Consent"] ?? "";
     var canUseGa = consentCookie == "yes";
@@ -10,10 +8,12 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BVB3MT8BNE"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-BVB3MT8BNE');
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() { dataLayer.push(arguments); }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-BVB3MT8BNE');
     </script>
 }

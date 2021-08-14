@@ -12,9 +12,9 @@ namespace Msoop.Reddit
 {
     public class AuthorizationHandler : DelegatingHandler
     {
+        private readonly SemaphoreSlim _fetchTokenSemaphore = new(initialCount: 1, maxCount: 1);
         private readonly HttpClient _httpClient;
         private RedditAccessToken _accessToken;
-        private readonly SemaphoreSlim _fetchTokenSemaphore = new(1, 1);
 
         public AuthorizationHandler(HttpClient httpClient, IOptions<RedditOptions> options)
         {
@@ -54,7 +54,7 @@ namespace Msoop.Reddit
             {
                 if (_accessToken == null || _accessToken.IsExpired)
                 {
-                    var dict = new Dictionary<string, string> {{"grant_type", "client_credentials"}};
+                    var dict = new Dictionary<string, string> { { "grant_type", "client_credentials" } };
                     var resp = await _httpClient.PostAsync("/api/v1/access_token", new FormUrlEncodedContent(dict),
                         cancellationToken);
                     _accessToken =

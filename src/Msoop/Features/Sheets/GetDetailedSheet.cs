@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Msoop.Data;
@@ -47,7 +44,7 @@ namespace Msoop.Features.Sheets
                     {
                         SubredditName = subreddit.Name,
                         MaxPostCount = subreddit.MaxPostCount,
-                        PostAgeLimitInDays = sheet.PostAgeLimitInDays
+                        PostAgeLimitInDays = sheet.PostAgeLimitInDays,
                     };
                     var listing = await _redditService.GetTopListing(listingCmd);
                     var posts = listing.Data.Children.Select(l => l.Data)
@@ -63,20 +60,20 @@ namespace Msoop.Features.Sheets
                         PostOrdering.Oldest => posts.OrderBy(p => p.CreatedUtc),
                         PostOrdering.ScoreDesc => posts,
                         PostOrdering.CommentsDesc => posts.OrderByDescending(p => p.CommentsCount),
-                        _ => throw new ArgumentOutOfRangeException(nameof(subreddit.PostOrdering))
+                        _ => throw new ArgumentOutOfRangeException(nameof(subreddit.PostOrdering)),
                     };
 
-                    return new DetailedSheetViewModel.Subreddit()
+                    return new DetailedSheetViewModel.Subreddit
                     {
                         Name = subreddit.Name,
                         PostOrdering = subreddit.PostOrdering,
-                        Posts = orderedPosts
+                        Posts = orderedPosts,
                     };
                 });
 
-                return new()
+                return new DetailedSheetViewModel
                 {
-                    Subreddits = await Task.WhenAll(fetchTasks)
+                    Subreddits = await Task.WhenAll(fetchTasks),
                 };
             }
         }

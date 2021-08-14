@@ -1,4 +1,3 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Msoop.Models;
 
@@ -15,9 +14,9 @@ namespace Msoop.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Sheet>().Property(s => s.PostAgeLimitInDays).HasDefaultValue(14);
+            modelBuilder.Entity<Sheet>().Property(s => s.PostAgeLimitInDays).HasDefaultValue(value: 14);
 
-            modelBuilder.Entity<Subreddit>().HasKey(sub => new {sub.SheetId, sub.Name});
+            modelBuilder.Entity<Subreddit>().HasKey(sub => new { sub.SheetId, sub.Name });
         }
     }
 }

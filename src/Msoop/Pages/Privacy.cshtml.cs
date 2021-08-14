@@ -6,7 +6,6 @@ namespace Msoop.Pages
     {
         public void OnGet()
         {
-            
         }
     }
 }

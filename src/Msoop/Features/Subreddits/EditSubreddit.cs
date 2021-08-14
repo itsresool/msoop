@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Msoop.Data;
 using Msoop.ViewModels;
@@ -38,16 +37,16 @@ namespace Msoop.Features.Subreddits
 
         public class Command : IRequest
         {
-            public Guid SheetId { get; }
-            public string SubName { get; set; }
-            public EditSubredditViewModel Form { get; }
-
             public Command(Query query, EditSubredditViewModel form)
             {
                 SheetId = query.SheetId;
                 SubName = query.SubName;
                 Form = form;
             }
+
+            public Guid SheetId { get; }
+            public string SubName { get; set; }
+            public EditSubredditViewModel Form { get; }
         }
 
         public class CommandHandler : IRequestHandler<Command>

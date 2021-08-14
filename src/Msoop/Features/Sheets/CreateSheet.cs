@@ -28,7 +28,7 @@ namespace Msoop.Features.Sheets
                 {
                     AllowOver18 = true,
                     AllowSpoilers = true,
-                    AllowStickied = false
+                    AllowStickied = false,
                 };
 
                 _db.Sheets.Add(sheet);

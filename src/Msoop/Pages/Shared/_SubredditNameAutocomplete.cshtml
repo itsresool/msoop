@@ -14,10 +14,11 @@
             }
         }
     });
-    
-    document.querySelector("#Data_Name").addEventListener("selection", function (event) {
-        const selectedOption = event.detail.selection.value;
-        const input = document.querySelector("#Data_Name");
-        input.value = selectedOption;
-    });
+
+    document.querySelector("#Data_Name").addEventListener("selection",
+        function(event) {
+            const selectedOption = event.detail.selection.value;
+            const input = document.querySelector("#Data_Name");
+            input.value = selectedOption;
+        });
 </script>

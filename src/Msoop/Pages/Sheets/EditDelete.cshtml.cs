@@ -26,7 +26,10 @@ namespace Msoop.Pages.Sheets
         public async Task<ActionResult> OnGetAsync(EditSheet.Query query)
         {
             var result = await _mediator.Send(query);
-            if (result is null) return RedirectToPage("/Index");
+            if (result is null)
+            {
+                return RedirectToPage("/Index");
+            }
 
             Form = result.Sheet;
             OwnedSubreddits = result.OwnedSubreddits;
@@ -44,7 +47,7 @@ namespace Msoop.Pages.Sheets
             var cmd = new EditSheet.Command(id, Form);
             await _mediator.Send(cmd);
 
-            return RedirectToPage("Index", new {id});
+            return RedirectToPage("Index", new { id });
         }
 
         public async Task<ActionResult> OnPostDeleteAsync(DeleteSheet.Command cmd)

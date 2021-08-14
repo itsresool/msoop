@@ -1,10 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Msoop.Data;
@@ -16,14 +14,14 @@ namespace Msoop.Features.Sheets
     {
         public class Response
         {
-            public EditSheetViewModel Sheet { get; }
-            public IList<SubredditSummaryViewModel> OwnedSubreddits { get; }
-
             public Response(EditSheetViewModel sheet, IList<SubredditSummaryViewModel> ownedSubreddits)
             {
                 Sheet = sheet;
                 OwnedSubreddits = ownedSubreddits;
             }
+
+            public EditSheetViewModel Sheet { get; }
+            public IList<SubredditSummaryViewModel> OwnedSubreddits { get; }
         }
 
         public class Query : IRequest<Response>
@@ -47,25 +45,28 @@ namespace Msoop.Features.Sheets
                 var sheet = await _db.Sheets.Include(s => s.Subreddits)
                     .FirstOrDefaultAsync(s => s.Id == msg.Id, cancellationToken);
 
-                if (sheet is null) return null;
+                if (sheet is null)
+                {
+                    return null;
+                }
 
                 var editSheet = _mapper.Map<EditSheetViewModel>(sheet);
                 var subreddits = _mapper.Map<IList<SubredditSummaryViewModel>>(sheet.Subreddits);
 
-                return new(editSheet, subreddits);
+                return new Response(editSheet, subreddits);
             }
         }
 
         public class Command : IRequest
         {
-            public Guid Id { get; }
-            public EditSheetViewModel Form { get; }
-
             public Command(Guid id, EditSheetViewModel form)
             {
                 Id = id;
                 Form = form;
             }
+
+            public Guid Id { get; }
+            public EditSheetViewModel Form { get; }
         }
 
         public class CommandHandler : IRequestHandler<Command>
@@ -92,7 +93,7 @@ namespace Msoop.Features.Sheets
                     PostAgeLimit.LastMonth => 31,
                     PostAgeLimit.LastYear => 365,
                     PostAgeLimit.Custom => cmd.Form.CustomAgeLimit,
-                    _ => throw new ArgumentOutOfRangeException(nameof(cmd.Form.PostAgeLimit))
+                    _ => throw new ArgumentOutOfRangeException(nameof(cmd.Form.PostAgeLimit)),
                 };
                 sheet.AllowOver18 = cmd.Form.AllowOver18;
                 sheet.AllowSpoilers = cmd.Form.AllowSpoilers;

@@ -11,6 +11,6 @@ namespace Msoop.Models
         ScoreDesc,
 
         [Display(Name = "Comments Descending")]
-        CommentsDesc
+        CommentsDesc,
     }
 }

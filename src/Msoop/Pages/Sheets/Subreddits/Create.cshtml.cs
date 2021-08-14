@@ -3,11 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using Msoop.Data;
-using Msoop.Features;
 using Msoop.Features.Subreddits;
-using Msoop.Reddit;
 using Msoop.ViewModels;
 
 namespace Msoop.Pages.Sheets.Subreddits
@@ -43,7 +39,7 @@ namespace Msoop.Pages.Sheets.Subreddits
                     ModelState.AddModelError(nameof(Data), "Subreddit already belongs to this sheet");
                     return Page();
                 default:
-                    return RedirectToPage("../EditDelete", new {id = sheetId});
+                    return RedirectToPage("../EditDelete", new { id = sheetId });
             }
         }
     }

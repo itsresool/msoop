@@ -13,12 +13,12 @@ namespace Msoop.Pages
     {
         private readonly ILogger<ErrorModel> _logger;
 
-        public string ErrorMessage { get; set; }
-
         public ErrorModel(ILogger<ErrorModel> logger)
         {
             _logger = logger;
         }
+
+        public string ErrorMessage { get; set; }
 
         public ActionResult OnGet()
         {

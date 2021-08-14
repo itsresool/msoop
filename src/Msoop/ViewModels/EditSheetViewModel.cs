@@ -10,7 +10,7 @@ namespace Msoop.ViewModels
         public Guid Id { get; set; }
         public PostAgeLimit PostAgeLimit { get; set; }
 
-        [Range(1, 9999, ErrorMessage = "Value must be between {1} and {2}")]
+        [Range(minimum: 1, maximum: 9999, ErrorMessage = "Value must be between {1} and {2}")]
         public int CustomAgeLimit { get; set; }
 
         [Display(Name = "Allow posts that contain adult content")]
@@ -32,14 +32,17 @@ namespace Msoop.ViewModels
                     .ForMember(dest => dest.CustomAgeLimit, opt => opt.MapFrom(src => src.PostAgeLimitInDays));
             }
 
-            private static PostAgeLimit MapToPostAgeLimit(int postAgeInDays) => postAgeInDays switch
+            private static PostAgeLimit MapToPostAgeLimit(int postAgeInDays)
             {
-                1 => PostAgeLimit.LastDay,
-                7 => PostAgeLimit.LastWeek,
-                31 => PostAgeLimit.LastMonth,
-                365 => PostAgeLimit.LastYear,
-                _ => PostAgeLimit.Custom
-            };
+                return postAgeInDays switch
+                {
+                    1 => PostAgeLimit.LastDay,
+                    7 => PostAgeLimit.LastWeek,
+                    31 => PostAgeLimit.LastMonth,
+                    365 => PostAgeLimit.LastYear,
+                    _ => PostAgeLimit.Custom,
+                };
+            }
         }
     }
 
@@ -58,6 +61,6 @@ namespace Msoop.ViewModels
         LastYear,
 
         [Display(Name = "Custom Period")]
-        Custom
+        Custom,
     }
 }

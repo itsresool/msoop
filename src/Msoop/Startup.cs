@@ -1,5 +1,3 @@
-using System;
-using System.Security.Policy;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -71,10 +69,7 @@ namespace Msoop
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapRazorPages();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapRazorPages(); });
         }
     }
 }

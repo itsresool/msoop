@@ -11,8 +11,8 @@ namespace Msoop.Reddit
     {
         private const string RemainingHeaderName = "X-Ratelimit-Remaining";
         private const string NextPeriodHeaderName = "X-Ratelimit-Reset";
+        private DateTimeOffset _nextPeriodUtcAt = DateTimeOffset.UtcNow.AddMinutes(minutes: 1);
         private int _requestsRemaining = 60;
-        private DateTimeOffset _nextPeriodUtcAt = DateTimeOffset.UtcNow.AddMinutes(1);
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)

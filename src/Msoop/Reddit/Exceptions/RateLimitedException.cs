@@ -4,8 +4,6 @@ namespace Msoop.Reddit.Exceptions
 {
     public class RateLimitedException : Exception
     {
-        public DateTimeOffset AttemptAgainAtUtc { get; init; }
-
         public RateLimitedException(DateTimeOffset time) : base("You are rate limited")
         {
             AttemptAgainAtUtc = time;
@@ -19,5 +17,7 @@ namespace Msoop.Reddit.Exceptions
             : base(message, innerException)
         {
         }
+
+        public DateTimeOffset AttemptAgainAtUtc { get; init; }
     }
 }

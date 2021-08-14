@@ -16,19 +16,19 @@ namespace Msoop.Features.Subreddits
         {
             Ok,
             SubredditNotFound,
-            SubredditAlreadyAdded
+            SubredditAlreadyAdded,
         }
 
         public class Command : IRequest<Response>
         {
-            public Guid SheetId { get; }
-            public CreateSubredditViewModel Form { get; }
-
             public Command(Guid sheetId, CreateSubredditViewModel form)
             {
                 SheetId = sheetId;
                 Form = form;
             }
+
+            public Guid SheetId { get; }
+            public CreateSubredditViewModel Form { get; }
         }
 
         public class Handler : IRequestHandler<Command, Response>
