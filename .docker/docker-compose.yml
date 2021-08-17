@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+    webapp:
+        build:
+            context: ..
+            dockerfile: src/Msoop.Web/Dockerfile
+        env_file:
+            - .env
+        environment:
+            Reddit__WebSecret: ${REDDIT_WEB_SECRET}
+            Reddit__WebClientId: ${REDDIT_WEB_CLIENT_ID}
+            ConnectionStrings__MsoopConnection: ${MSOOP_CONNECTION_STRING}
+        depends_on:
+            - db
+        ports:
+            - "5000:80"
+    db:
+        image: "mcr.microsoft.com/mssql/server:2019-latest"
+        env_file:
+            - .env
+        environment:
+            SA_PASSWORD: ${DB_PASSWORD}
+            ACCEPT_EULA: "Y"
+        ports:
+            - "1433:1433"
+        # MSSQL does not support creating a database on container startup, this is a workaround
+        # Taken from https://github.com/Microsoft/mssql-docker/issues/2#issuecomment-724401031
+        command: /bin/sh -c "(/opt/mssql/bin/sqlservr &) && sleep 10s && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${DB_PASSWORD} -Q 'CREATE DATABASE [${DB_NAME}]' && sleep infinity"
+    # Container that applies migration script
+    # To create migration script run: 
+    #       dotnet ef migrations script --idempotent -p src/Msoop.Infrastructure/ -s src/Msoop.Web
+    # To apply migrations on running db: 
+    #       docker-compose -f .docker/docker-compose.yml run db--migrations
+    db--migrations:
+        image: "mcr.microsoft.com/mssql-tools"
+        env_file:
+            - .env
+        # Sleep 10 seconds, otherwise this container will fail
+        command: /bin/sh -c "sleep 10s && /opt/mssql-tools/bin/sqlcmd -S db -U sa -P ${DB_PASSWORD} -i /input.sql -d ${DB_NAME}"
+        volumes:
+            - ./migrations.sql:/input.sql
+        depends_on:
+            - db

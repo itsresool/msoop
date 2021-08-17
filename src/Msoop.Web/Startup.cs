@@ -54,14 +54,15 @@ namespace Msoop.Web
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                // We don't use Hsts and HttpsRedirection middlewares, because
+                // our webapp will be hosted behind nginx that will handle it
+                // app.UseHsts();
             }
 
             app.UseStatusCodePages();
             app.UseStatusCodePagesWithReExecute("/Status{0}");
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
