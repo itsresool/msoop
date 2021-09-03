@@ -11,11 +11,11 @@ namespace Msoop.Infrastructure.Migrations
                 name: "Sheets",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PostAgeLimitInDays = table.Column<int>(type: "int", nullable: false, defaultValue: 7),
-                    AllowOver18 = table.Column<bool>(type: "bit", nullable: false),
-                    AllowSpoilers = table.Column<bool>(type: "bit", nullable: false),
-                    AllowStickied = table.Column<bool>(type: "bit", nullable: false)
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    PostAgeLimitInDays = table.Column<int>(type: "integer", nullable: false, defaultValue: 7),
+                    AllowOver18 = table.Column<bool>(type: "boolean", nullable: false),
+                    AllowSpoilers = table.Column<bool>(type: "boolean", nullable: false),
+                    AllowStickied = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -26,10 +26,10 @@ namespace Msoop.Infrastructure.Migrations
                 name: "Subreddits",
                 columns: table => new
                 {
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    SheetId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MaxPostCount = table.Column<int>(type: "int", nullable: false),
-                    PostOrdering = table.Column<int>(type: "int", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    SheetId = table.Column<Guid>(type: "uuid", nullable: false),
+                    MaxPostCount = table.Column<int>(type: "integer", nullable: false),
+                    PostOrdering = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -1,49 +1,46 @@
-﻿IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+﻿CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+
+START TRANSACTION;
+
+
+DO $$
 BEGIN
-    CREATE TABLE [__EFMigrationsHistory] (
-        [MigrationId] nvarchar(150) NOT NULL,
-        [ProductVersion] nvarchar(32) NOT NULL,
-        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20210903135012_InitialCreate') THEN
+    CREATE TABLE "Sheets" (
+        "Id" uuid NOT NULL,
+        "PostAgeLimitInDays" integer NOT NULL DEFAULT 7,
+        "AllowOver18" boolean NOT NULL,
+        "AllowSpoilers" boolean NOT NULL,
+        "AllowStickied" boolean NOT NULL,
+        CONSTRAINT "PK_Sheets" PRIMARY KEY ("Id")
     );
-END;
-GO
+    END IF;
+END $$;
 
-BEGIN TRANSACTION;
-GO
-
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210816220751_InitialCreate')
+DO $$
 BEGIN
-    CREATE TABLE [Sheets] (
-        [Id] uniqueidentifier NOT NULL,
-        [PostAgeLimitInDays] int NOT NULL DEFAULT 7,
-        [AllowOver18] bit NOT NULL,
-        [AllowSpoilers] bit NOT NULL,
-        [AllowStickied] bit NOT NULL,
-        CONSTRAINT [PK_Sheets] PRIMARY KEY ([Id])
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20210903135012_InitialCreate') THEN
+    CREATE TABLE "Subreddits" (
+        "Name" text NOT NULL,
+        "SheetId" uuid NOT NULL,
+        "MaxPostCount" integer NOT NULL,
+        "PostOrdering" integer NOT NULL,
+        CONSTRAINT "PK_Subreddits" PRIMARY KEY ("SheetId", "Name"),
+        CONSTRAINT "FK_Subreddits_Sheets_SheetId" FOREIGN KEY ("SheetId") REFERENCES "Sheets" ("Id") ON DELETE CASCADE
     );
-END;
-GO
+    END IF;
+END $$;
 
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210816220751_InitialCreate')
+DO $$
 BEGIN
-    CREATE TABLE [Subreddits] (
-        [Name] nvarchar(450) NOT NULL,
-        [SheetId] uniqueidentifier NOT NULL,
-        [MaxPostCount] int NOT NULL,
-        [PostOrdering] int NOT NULL,
-        CONSTRAINT [PK_Subreddits] PRIMARY KEY ([SheetId], [Name]),
-        CONSTRAINT [FK_Subreddits_Sheets_SheetId] FOREIGN KEY ([SheetId]) REFERENCES [Sheets] ([Id]) ON DELETE CASCADE
-    );
-END;
-GO
-
-IF NOT EXISTS(SELECT * FROM [__EFMigrationsHistory] WHERE [MigrationId] = N'20210816220751_InitialCreate')
-BEGIN
-    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20210816220751_InitialCreate', N'5.0.8');
-END;
-GO
-
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20210903135012_InitialCreate') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20210903135012_InitialCreate', '5.0.8');
+    END IF;
+END $$;
 COMMIT;
-GO
 

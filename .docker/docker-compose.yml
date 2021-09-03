@@ -16,28 +16,29 @@ services:
         ports:
             - "5000:80"
     db:
-        image: "mcr.microsoft.com/mssql/server:2019-latest"
+        image: "postgres"
         env_file:
             - .env
         environment:
-            SA_PASSWORD: ${DB_PASSWORD}
-            ACCEPT_EULA: "Y"
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
         ports:
-            - "1433:1433"
-        # MSSQL does not support creating a database on container startup, this is a workaround
-        # Taken from https://github.com/Microsoft/mssql-docker/issues/2#issuecomment-724401031
-        command: /bin/sh -c "(/opt/mssql/bin/sqlservr &) && sleep 10s && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${DB_PASSWORD} -Q 'CREATE DATABASE [${DB_NAME}]' && sleep infinity"
+            - "5432:5432"
     # Container that applies migration script
     # To create migration script run: 
-    #       dotnet ef migrations script --idempotent -p src/Msoop.Infrastructure/ -s src/Msoop.Web
+    #       dotnet ef migrations script --idempotent -p src/Msoop.Infrastructure/ -s src/Msoop.Web -o .docker/migrations.sql
     # To apply migrations on running db: 
     #       docker-compose -f .docker/docker-compose.yml run db--migrations
     db--migrations:
-        image: "mcr.microsoft.com/mssql-tools"
+        image: "postgres"
         env_file:
             - .env
-        # Sleep 10 seconds, otherwise this container will fail
-        command: /bin/sh -c "sleep 10s && /opt/mssql-tools/bin/sqlcmd -S db -U sa -P ${DB_PASSWORD} -i /input.sql -d ${DB_NAME}"
+        environment:
+            PGHOST: db
+            PGUSER: postgres
+            PGPASSWORD: ${DB_PASSWORD}
+            PGDATABASE: ${DB_NAME}
+        command: /bin/sh -c "sleep 5s && psql -f /input.sql"
         volumes:
             - ./migrations.sql:/input.sql
         depends_on:

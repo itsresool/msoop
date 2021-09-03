@@ -32,7 +32,7 @@ namespace Msoop.Web
             });
             services.AddDbContext<MsoopContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("MsoopConnection"));
+                options.UseNpgsql(Configuration.GetConnectionString("MsoopConnection"));
             });
 
             services.AddAutoMapper(typeof(Startup));
