@@ -2,7 +2,7 @@ name: Build and deploy our app
 
 on:
   push:
-    branches: [master]
+    branches: [ master ]
 
 env:
   REGISTRY: ghcr.io

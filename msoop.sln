@@ -21,6 +21,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 		.config/dotnet-tools.json = .config/dotnet-tools.json
 		.gitignore = .gitignore
+		.github/workflows/deploy-with-docker.yml = .github/workflows/deploy-with-docker.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{795A0922-64DC-4CB1-94C0-405E55A2667E}"
@@ -28,6 +29,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{795A09
 		.dockerignore = .dockerignore
 		.docker\docker-compose.yml = .docker\docker-compose.yml
 		.docker\migrations.sql = .docker\migrations.sql
+		.docker/.env.template = .docker/.env.template
 	EndProjectSection
 EndProject
 Global
