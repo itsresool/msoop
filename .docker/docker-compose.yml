@@ -25,6 +25,8 @@ services:
       POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
   # Container that applies migration script
   # To create migration script run:
   #       dotnet ef migrations script --idempotent -p src/Msoop.Infrastructure/ -s src/Msoop.Web -o .docker/migrations.sql
@@ -44,3 +46,5 @@ services:
       - ./migrations.sql:/input.sql
     depends_on:
       - db
+volumes:
+  db-data:
