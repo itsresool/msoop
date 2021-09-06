@@ -13,3 +13,7 @@ csharp_trailing_comma_in_multiline_lists=true
 csharp_object_creation_when_type_evident=target_typed
 csharp_place_attribute_on_same_line=never
 csharp_arguments_literal=named
+
+[*.{yml,yaml}]
+indent_size = 2
+indent_style = space

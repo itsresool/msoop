@@ -1,0 +1,67 @@
+name: Build and deploy our app
+
+on:
+  push:
+    branches: [master]
+
+env:
+  REGISTRY: ghcr.io
+  WEBAPP_TAG: ${{ github.repository }}/webapp
+
+jobs:
+  Build-And-Push-Webapp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to GitHub Packages
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push webapp image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: src/Msoop.Web/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.WEBAPP_TAG }}
+
+  Deploy:
+    needs: Build-And-Push-Webapp
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Copy .docker folder contents to our remote
+        uses: easingthemes/ssh-deploy@v2
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.REMOTE_SSH_PRIVATE }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          SOURCE: .docker/
+          TARGET: ${{ secrets.REMOTE_APP_ROOT }}
+
+      - name: Create .env file for docker-compose on our remote
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.REMOTE_SSH_PRIVATE }}
+          script: |
+            echo '${{ secrets.ENV_FILE }}' > ${{ secrets.REMOTE_APP_ROOT}}/.env
+
+      - name: Deploy our app using docker-compose
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.REMOTE_SSH_PRIVATE }}
+          script: |
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+            cd ${{ secrets.REMOTE_APP_ROOT}}
+            export WEBAPP_IMAGE=${{ env.REGISTRY }}/${{ env.WEBAPP_TAG }}
+            docker-compose stop
+            docker-compose up --detach
