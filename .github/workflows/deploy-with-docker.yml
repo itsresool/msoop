@@ -51,7 +51,7 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.REMOTE_SSH_PRIVATE }}
           script: |
-            echo '${{ secrets.ENV_FILE }}' > ${{ secrets.REMOTE_APP_ROOT}}/.env
+            echo '${{ secrets.ENV_FILE }}' > ${{ secrets.REMOTE_APP_ROOT }}/.env
 
       - name: Deploy our app using docker-compose
         uses: appleboy/ssh-action@v0.1.4
@@ -61,7 +61,8 @@ jobs:
           key: ${{ secrets.REMOTE_SSH_PRIVATE }}
           script: |
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
-            cd ${{ secrets.REMOTE_APP_ROOT}}
             export WEBAPP_IMAGE=${{ env.REGISTRY }}/${{ env.WEBAPP_TAG }}
+            docker pull $WEBAPP_IMAGE
+            cd ${{ secrets.REMOTE_APP_ROOT }}
             docker-compose stop
             docker-compose up --detach
