@@ -16,6 +16,8 @@ services:
       - db
     ports:
       - "5000:80"
+    volumes:
+      - webapp-keys:/root/.aspnet/DataProtection-Keys
   db:
     image: "postgres"
     env_file:
@@ -48,3 +50,4 @@ services:
       - db
 volumes:
   db-data:
+  webapp-keys:
