@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Msoop.Core.Models;
-using Msoop.Web.Reddit;
+using Msoop.Web.Reddit.Serialization;
 
 namespace Msoop.Web.ViewModels
 {

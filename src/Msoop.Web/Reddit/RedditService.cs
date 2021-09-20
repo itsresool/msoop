@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Msoop.Web.Reddit.Exceptions;
+using Msoop.Web.Reddit.Serialization;
 
 namespace Msoop.Web.Reddit
 {

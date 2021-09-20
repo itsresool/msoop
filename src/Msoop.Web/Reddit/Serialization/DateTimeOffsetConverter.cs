@@ -2,7 +2,7 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Msoop.Web.Reddit
+namespace Msoop.Web.Reddit.Serialization
 {
     public class DateTimeOffsetConverter : JsonConverter<DateTimeOffset>
     {

@@ -1,4 +1,4 @@
-namespace Msoop.Web.Reddit
+namespace Msoop.Web.Reddit.Serialization
 {
     public class RedditResource<T>
     {

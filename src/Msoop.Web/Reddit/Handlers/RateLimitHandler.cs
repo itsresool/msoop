@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Msoop.Web.Reddit.Exceptions;
 
-namespace Msoop.Web.Reddit
+namespace Msoop.Web.Reddit.Handlers
 {
     public class RateLimitHandler : DelegatingHandler
     {

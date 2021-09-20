@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Msoop.Web.Reddit;
+using Msoop.Web.Reddit.Handlers;
 
 namespace Msoop.Web.Extensions
 {

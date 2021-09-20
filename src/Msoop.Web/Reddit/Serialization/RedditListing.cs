@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Msoop.Web.Reddit
+namespace Msoop.Web.Reddit.Serialization
 {
     public class RedditListing
     {
