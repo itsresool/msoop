@@ -22,7 +22,7 @@ namespace Msoop.Web.Reddit.Handlers
             _httpClient = httpClient;
             var opts = options.Value;
 
-            _httpClient.BaseAddress = new Uri(opts.AuthorizationAddress);
+            _httpClient.BaseAddress = new Uri(opts.AuthorizationBaseAddress);
             _httpClient.DefaultRequestHeaders.Add("Authorization",
                 GetBasicAuthValue(opts.WebClientId, opts.WebSecret));
             // Reddit requires from each app to have a unique user-agent that conforms to their syntax
@@ -56,8 +56,8 @@ namespace Msoop.Web.Reddit.Handlers
                 if (_accessToken == null || _accessToken.IsExpired)
                 {
                     var dict = new Dictionary<string, string> { { "grant_type", "client_credentials" } };
-                    var resp = await _httpClient.PostAsync("/api/v1/access_token", new FormUrlEncodedContent(dict),
-                        cancellationToken);
+                    var resp = await _httpClient.PostAsync("/api/v1/access_token",
+                        new FormUrlEncodedContent(dict), cancellationToken);
                     _accessToken =
                         await resp.Content.ReadFromJsonAsync<RedditAccessToken>(cancellationToken: cancellationToken);
                 }

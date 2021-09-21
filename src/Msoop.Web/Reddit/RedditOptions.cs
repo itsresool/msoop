@@ -4,7 +4,7 @@ namespace Msoop.Web.Reddit
     {
         public const string Reddit = "Reddit";
 
-        public string AuthorizationAddress { get; set; }
+        public string AuthorizationBaseAddress { get; set; }
         public string ApiBaseAddress { get; set; }
         public string WebClientId { get; set; }
         public string WebSecret { get; set; }
