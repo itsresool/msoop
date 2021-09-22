@@ -11,7 +11,7 @@ namespace Msoop.Web.Extensions
             services.AddTransient<AuthorizationHandler>();
             services.AddTransient<RateLimitHandler>();
 
-            return services.AddHttpClient<RedditService>()
+            return services.AddHttpClient<IRedditService, RedditService>()
                 .AddHttpMessageHandler<AuthorizationHandler>()
                 .AddHttpMessageHandler<RateLimitHandler>();
         }

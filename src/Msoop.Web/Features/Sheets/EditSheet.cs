@@ -12,9 +12,9 @@ namespace Msoop.Web.Features.Sheets
 {
     public class EditSheet
     {
-        public class Response
+        public class QueryResult
         {
-            public Response(EditSheetViewModel sheet, IList<SubredditSummaryViewModel> ownedSubreddits)
+            public QueryResult(EditSheetViewModel sheet, IList<SubredditSummaryViewModel> ownedSubreddits)
             {
                 Sheet = sheet;
                 OwnedSubreddits = ownedSubreddits;
@@ -24,12 +24,12 @@ namespace Msoop.Web.Features.Sheets
             public IList<SubredditSummaryViewModel> OwnedSubreddits { get; }
         }
 
-        public class Query : IRequest<Response>
+        public class Query : IRequest<QueryResult>
         {
             public Guid Id { get; init; }
         }
 
-        public class QueryHandler : IRequestHandler<Query, Response>
+        public class QueryHandler : IRequestHandler<Query, QueryResult>
         {
             private readonly MsoopContext _db;
             private readonly IMapper _mapper;
@@ -40,7 +40,7 @@ namespace Msoop.Web.Features.Sheets
                 _mapper = mapper;
             }
 
-            public async Task<Response> Handle(Query msg, CancellationToken cancellationToken)
+            public async Task<QueryResult> Handle(Query msg, CancellationToken cancellationToken)
             {
                 var sheet = await _db.Sheets.Include(s => s.Subreddits)
                     .FirstOrDefaultAsync(s => s.Id == msg.Id, cancellationToken);
@@ -53,7 +53,7 @@ namespace Msoop.Web.Features.Sheets
                 var editSheet = _mapper.Map<EditSheetViewModel>(sheet);
                 var subreddits = _mapper.Map<IList<SubredditSummaryViewModel>>(sheet.Subreddits);
 
-                return new Response(editSheet, subreddits);
+                return new QueryResult(editSheet, subreddits);
             }
         }
 

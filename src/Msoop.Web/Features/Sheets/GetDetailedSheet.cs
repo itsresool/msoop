@@ -21,9 +21,9 @@ namespace Msoop.Web.Features.Sheets
         public class Handler : IRequestHandler<Query, DetailedSheetViewModel>
         {
             private readonly MsoopContext _db;
-            private readonly RedditService _redditService;
+            private readonly IRedditService _redditService;
 
-            public Handler(MsoopContext db, RedditService redditService)
+            public Handler(MsoopContext db, IRedditService redditService)
             {
                 _db = db;
                 _redditService = redditService;
@@ -40,7 +40,7 @@ namespace Msoop.Web.Features.Sheets
 
                 var fetchTasks = sheet.Subreddits.Select(async subreddit =>
                 {
-                    var listingCmd = new RedditService.ListingCommand
+                    var listingCmd = new RedditListingCommand
                     {
                         SubredditName = subreddit.Name,
                         MaxPostCount = subreddit.MaxPostCount,

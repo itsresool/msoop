@@ -10,7 +10,7 @@ using Msoop.Web.Reddit.Serialization;
 
 namespace Msoop.Web.Reddit
 {
-    public class RedditService
+    public class RedditService : IRedditService
     {
         private const int MaxListingLimit = 100;
         private readonly HttpClient _apiClient;
@@ -40,7 +40,7 @@ namespace Msoop.Web.Reddit
             }
         }
 
-        public async Task<RedditResource<RedditListing>> GetTopListing(ListingCommand cmd)
+        public async Task<RedditResource<RedditListing>> GetTopListing(RedditListingCommand cmd)
         {
             var ageOption = cmd.PostAgeLimitInDays switch
             {
@@ -71,14 +71,6 @@ namespace Msoop.Web.Reddit
             {
                 throw new RedditServiceException($"Failed to fetch /r/{cmd.SubredditName} listing.");
             }
-        }
-
-        public class ListingCommand
-        {
-            public string SubredditName { get; init; }
-            public int MaxPostCount { get; init; }
-            public int PostAgeLimitInDays { get; init; }
-            public bool HasCustomPostAgeLimit => PostAgeLimitInDays is not 1 or 7 or 31 or 365;
         }
     }
 }

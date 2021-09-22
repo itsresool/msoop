@@ -34,9 +34,9 @@ namespace Msoop.Web.Features.Subreddits
         public class Handler : IRequestHandler<Command, Response>
         {
             private readonly MsoopContext _db;
-            private readonly RedditService _redditService;
+            private readonly IRedditService _redditService;
 
-            public Handler(MsoopContext db, RedditService redditService)
+            public Handler(MsoopContext db, IRedditService redditService)
             {
                 _db = db;
                 _redditService = redditService;
