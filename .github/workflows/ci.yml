@@ -1,0 +1,30 @@
+name: Build and test
+
+on: [ "push", "pull_request" ]
+
+jobs:
+  Build-And-Test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET Core SDK 5.0
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Start test db
+        run: docker run --detach --pull=always --name=psql -e POSTGRES_PASSWORD=docker -p 5432:5432 postgres
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build --verbosity normal
+        
+      - name: Stop test db
+        run: docker stop psql
