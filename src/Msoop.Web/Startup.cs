@@ -42,6 +42,7 @@ namespace Msoop.Web
             services.AddRedditService();
 
             services.AddRazorPages();
+            services.AddWebOptimizer(pipeline => { pipeline.AddScssBundle("/css/main.css", "/scss/main.scss"); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,6 +64,8 @@ namespace Msoop.Web
             app.UseStatusCodePagesWithReExecute("/Status{0}");
 
             // app.UseHttpsRedirection();
+
+            app.UseWebOptimizer();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
